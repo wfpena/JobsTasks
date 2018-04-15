@@ -23,7 +23,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author User
+ * 
+ * @author Wilson Pena
  *
  */
 @Entity

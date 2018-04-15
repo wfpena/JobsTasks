@@ -21,7 +21,12 @@ import unisys.test.models.Job;
 import unisys.test.models.Task;
 
 
+/**
+ * @author Wilson Pena
+ *
+ */
 @RestController
+@RequestMapping("/jobs")
 public class JobController {
 
 	private final Logger logger = Logger.getLogger(JobController.class);
@@ -31,7 +36,7 @@ public class JobController {
 	
 	DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
 	
-	@RequestMapping(value="/jobs", method=RequestMethod.POST,
+	@RequestMapping(value="", method=RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity jobs(@RequestBody Job job) {
@@ -48,7 +53,7 @@ public class JobController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Transaction Error: " + e.getMessage() + "\"");
 		}
     }
-	@RequestMapping(value="/jobs", method=RequestMethod.GET,
+	@RequestMapping(value="", method=RequestMethod.GET,
             produces="application/json")
     public ResponseEntity jobs(@RequestParam(value="order", required=false) boolean order) {
 		logger.info("Retrieving All Jobs");
@@ -63,7 +68,7 @@ public class JobController {
 		}
     }
 	
-	@RequestMapping(value="/jobs/{id}", method=RequestMethod.GET,
+	@RequestMapping(value="/{id}", method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity jobs(@PathVariable("id") Long id) {
 		logger.info("Retrieving Job with ID: " + id);
@@ -81,7 +86,7 @@ public class JobController {
 		}
     }
 	
-	@RequestMapping(value="/jobs/{id}", method=RequestMethod.DELETE,
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity deleteJob(@PathVariable("id") Long id) {
 		logger.info("Deleting Job with id: " + id);
@@ -95,7 +100,7 @@ public class JobController {
 		}
     }
 	
-	@RequestMapping(value="/jobs/{id}", method=RequestMethod.PUT,
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity updateJob(@PathVariable("id") Long id, @RequestBody Job job) {
