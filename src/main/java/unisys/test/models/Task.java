@@ -23,10 +23,10 @@ public class Task {
 	@GeneratedValue
 	private Long Id;
 	
-	@Column(name="Name")
+	@Column(name="Name", nullable=false)
 	private String name;
 	
-	@Column(name="Weight")
+	@Column(name="Weight", nullable=false)
 	private Double weight;
 	
 	@Column(name="Completed")
@@ -85,6 +85,10 @@ public class Task {
 
 	public void setJob(Job job) {
 		this.job = job;
+	}
+	
+	public void setValuesFromJson(){
+		
 	}
 	
 }

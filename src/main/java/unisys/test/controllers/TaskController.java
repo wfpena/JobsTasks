@@ -31,7 +31,7 @@ public class TaskController {
 	@RequestMapping(value="/tasks", method=RequestMethod.GET,
 		    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity getTasks(@RequestParam(value="creationDate", required=false) String date) {
-		logger.info("Ordered? " + date);
+		logger.info(date == null ? "Not filtered by date" : new String("Filtered by date " + date));
 		try{
 			List<Task> tasks = taskDAO.list(date);
 			return ResponseEntity.status(HttpStatus.OK).body(tasks);
