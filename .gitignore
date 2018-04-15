@@ -10,6 +10,8 @@
  
 # DB
 test.db
+unisys_jobs.db
+db_for_testing.db
 
 # Maven
 log/
