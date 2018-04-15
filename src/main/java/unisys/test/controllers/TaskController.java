@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import unisys.test.dao.TaskDAO;
+import unisys.test.models.Job;
 import unisys.test.models.Task;
 
 
@@ -44,7 +45,7 @@ public class TaskController {
 			method=RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String jobs(@RequestBody Task task) {
+    public String newTask(@RequestBody Task task) {
 		logger.info("Task:" + task.getId());
 		try{
 			taskDAO.save(task);
@@ -94,7 +95,13 @@ public class TaskController {
     public String updateJob(@PathVariable("id") Long id, @RequestBody Task task) {
 		logger.info("Updating Task with id " + id);
 		try{
-			taskDAO.update(task);
+			Task taskUpdate = taskDAO.get(id);
+			taskUpdate.setCompleted(task.isCompleted());
+			taskUpdate.setCreatedAt(task.getCreatedAt());
+			taskUpdate.setJob(task.getJob());
+			taskUpdate.setName(task.getName());
+			taskUpdate.setWeight(task.getWeight());
+			taskDAO.update(taskUpdate);
 			return "Update Success";
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
