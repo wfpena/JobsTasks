@@ -12,6 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import unisys.test.models.Job;
 import unisys.test.models.Task;
 
+/**
+ * Domain Repository for Tasks
+ * @author Wilson Pena
+ *
+ */
 @Repository
 public class TaskDAO extends BaseDAO<Task> {
 		

@@ -20,7 +20,12 @@ import unisys.test.models.Job;
 import unisys.test.models.Task;
 
 
+/**
+ * @author Wilson Pena
+ *
+ */
 @RestController
+@RequestMapping("/tasks")
 public class TaskController {
 
 	private final Logger logger = Logger.getLogger(TaskController.class);
@@ -28,10 +33,10 @@ public class TaskController {
 	@Autowired
 	private TaskDAO taskDAO;
 	
-	@RequestMapping(value="/tasks", method=RequestMethod.GET,
+	@RequestMapping(value="", method=RequestMethod.GET,
 		    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity getTasks(@RequestParam(value="creationDate", required=false) String date) {
-		logger.info("Ordered? " + date);
+		logger.info(date == null ? "Not filtered by date" : new String("Filtered by date " + date));
 		try{
 			List<Task> tasks = taskDAO.list(date);
 			return ResponseEntity.status(HttpStatus.OK).body(tasks);
@@ -41,21 +46,21 @@ public class TaskController {
 		}
 	}
 	
-	@RequestMapping(value="/tasks", method=RequestMethod.POST,
+	@RequestMapping(value="", method=RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity newTask(@RequestBody Task task) {
-		logger.info("Task:" + task.getId());
+		logger.info("Inserting new Task");
 		try{
 			taskDAO.save(task);
 			return ResponseEntity.status(HttpStatus.CREATED).body(task);
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Failed saving new Task\"");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Failed saving new Task: " + e.getLocalizedMessage() + "\"");
 		}
     }
 	
-	@RequestMapping(value="/tasks/{id}", method=RequestMethod.GET,
+	@RequestMapping(value="/{id}", method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getTask(@PathVariable("id") Long id) {
 		logger.info("Getting Taks with ID: " + id);
@@ -70,7 +75,7 @@ public class TaskController {
 		
     }
 	
-	@RequestMapping(value="/tasks/{id}", method=RequestMethod.DELETE,
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity deleteTask(@PathVariable("id") Long id) {
 		logger.info("Deleting Job with ID: " + id);
@@ -83,7 +88,7 @@ public class TaskController {
 		}
     }
 	
-	@RequestMapping(value="/tasks/{id}", method=RequestMethod.PUT,
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity updateJob(@PathVariable("id") Long id, @RequestBody Task task) {

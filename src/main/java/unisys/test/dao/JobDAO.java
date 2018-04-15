@@ -11,6 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import unisys.test.models.Job;
 
+/**
+ * Domain Repository for Job
+ * @author Wilson Pena
+ *
+ */
 @Repository
 public class JobDAO extends BaseDAO<Job> {
 		
