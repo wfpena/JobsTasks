@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,63 +30,63 @@ public class TaskController {
 	
 	@RequestMapping(value="/tasks", method=RequestMethod.GET,
 		    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody List<Task> getTasks(@RequestParam("creationDate") String date) {
+	public ResponseEntity getTasks(@RequestParam(value="creationDate", required=false) String date) {
 		logger.info("Ordered? " + date);
 		try{
 			List<Task> tasks = taskDAO.list(date);
-			return tasks;
+			return ResponseEntity.status(HttpStatus.OK).body(tasks);
 		}catch(Exception e){
 			logger.error("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Server Error: " + e.getMessage() +  "\"");
 		}
-		return null;
 	}
 	
 	@RequestMapping(value="/tasks", method=RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String newTask(@RequestBody Task task) {
+    public ResponseEntity newTask(@RequestBody Task task) {
 		logger.info("Task:" + task.getId());
 		try{
 			taskDAO.save(task);
-			return "Saved Task Successfully";
+			return ResponseEntity.status(HttpStatus.CREATED).body(task);
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
-			return "Failed saving new Task";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Failed saving new Task\"");
 		}
     }
 	
 	@RequestMapping(value="/tasks/{id}", method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody Task getTask(@PathVariable("id") Long id) {
+    public ResponseEntity getTask(@PathVariable("id") Long id) {
 		logger.info("Getting Taks with ID: " + id);
 		System.out.println("AFW");
 		try{
 			Task task = taskDAO.get(id);
-			return task;
+			return ResponseEntity.status(HttpStatus.OK).body(task);
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
-			return null;
+			return ResponseEntity.status(HttpStatus.OK).body("\"Transaction Error\"");
 		}
 		
     }
 	
 	@RequestMapping(value="/tasks/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String deleteTask(@PathVariable("id") Long id) {
+    public ResponseEntity deleteTask(@PathVariable("id") Long id) {
 		logger.info("Deleting Job with id: " + id);
 		try{
 			taskDAO.delete(id);
-			return "Task removed successfully";
+			return ResponseEntity.status(HttpStatus.OK).body("\"Task removed successfully\"");
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.OK).body("\"Transaction Error\"");
 		}
-		return "Error removing Task";
     }
 	
 	@RequestMapping(value="/tasks/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String updateJob(@PathVariable("id") Long id, @RequestBody Task task) {
+    public ResponseEntity updateJob(@PathVariable("id") Long id, @RequestBody Task task) {
 		logger.info("Updating Task with id " + id);
 		try{
 			Task taskUpdate = taskDAO.get(id);
@@ -95,10 +96,10 @@ public class TaskController {
 			taskUpdate.setName(task.getName());
 			taskUpdate.setWeight(task.getWeight());
 			taskDAO.update(taskUpdate);
-			return "Update Success";
+			return ResponseEntity.status(HttpStatus.OK).body(taskUpdate);
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
-			return "Failed updating new job";
+			return ResponseEntity.status(HttpStatus.OK).body("\"Transaction Error: " + e.getMessage() + "\"");
 		}
     }
 	

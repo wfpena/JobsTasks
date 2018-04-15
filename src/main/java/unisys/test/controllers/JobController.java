@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import unisys.test.dao.JobDAO;
@@ -35,7 +34,7 @@ public class JobController {
 	@RequestMapping(value="/jobs", method=RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String jobs(@RequestBody Job job) {
+    public ResponseEntity jobs(@RequestBody Job job) {
 		logger.info("Saving new Job");
 		try{
 			for(Task task : job.getTasks()){
@@ -43,10 +42,10 @@ public class JobController {
 			}
 			jobDAO.save(job);
 			logger.info("Job Saved Successfully");
-			return "Saved Success";
+			return ResponseEntity.status(HttpStatus.CREATED).body(job);
 		}catch(Exception e){
-			logger.info("Transaction Error: " + e);
-			return "Failed saving new job";
+			logger.info("Transaction Error: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Transaction Error: " + e.getMessage() + "\"");
 		}
     }
 	@RequestMapping(value="/jobs", method=RequestMethod.GET,
@@ -57,10 +56,10 @@ public class JobController {
 		try{
 			List<Job> jobs = jobDAO.list(order);
 			logger.info("Retrieved " + jobs.size() + " Jobs");
-			return ResponseEntity.status(HttpStatus.CREATED).body(jobs);
+			return ResponseEntity.status(HttpStatus.OK).body(jobs);
 		}catch(Exception e){
 			logger.error("Transaction Error: " + e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Transaction Error");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Transaction Error\"");
 		}
     }
 	
@@ -71,30 +70,35 @@ public class JobController {
 		try{
 			Job job = jobDAO.get(id);
 			logger.info("End of Transaction");
-			return ResponseEntity.status(HttpStatus.OK).body(job);
+			if(job != null){
+				return ResponseEntity.status(HttpStatus.OK).body(job);
+			} else {
+				return new ResponseEntity<String>("\"Job not Found\"", HttpStatus.NOT_FOUND);
+			}
 		}catch(Exception e){
 			logger.error("Transaction Error: " + e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Error retrieving Job");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Internal Error retrieving Job\"");
 		}
     }
 	
 	@RequestMapping(value="/jobs/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String deleteJob(@PathVariable("id") Long id) {
+    public ResponseEntity deleteJob(@PathVariable("id") Long id) {
 		logger.info("Deleting Job with id: " + id);
 		try{
 			jobDAO.delete(id);
-			return "Job removed";
+			logger.info("End of Transaction");
+			return ResponseEntity.status(HttpStatus.OK).body(new String("\"Job succesfully removed\""));
 		}catch(Exception e){
 			logger.error("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Error removing Job: "+ e.getMessage() + "\"");
 		}
-		return "Error removing Job";
     }
 	
 	@RequestMapping(value="/jobs/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String updateJob(@PathVariable("id") Long id, @RequestBody Job job) {
+    public ResponseEntity updateJob(@PathVariable("id") Long id, @RequestBody Job job) {
 		logger.info("Updating job with id " + id);
 		try{
 			Job jobUpdate = jobDAO.get(id);
@@ -104,10 +108,10 @@ public class JobController {
 			jobUpdate.setParentJob(job.getParentJob());
 			jobUpdate.setTasks(job.getTasks());
 			jobDAO.update(jobUpdate);
-			return "Update Success";
+			return ResponseEntity.status(HttpStatus.OK).body(jobUpdate);
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
-			return "Failed updating new job";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Error: "+ e.getMessage() + "\"");
 		}
     }
 	
