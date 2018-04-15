@@ -26,19 +26,19 @@ public class TaskController {
 	@Autowired
 	private TaskDAO taskDAO;
 	
-//	@RequestMapping(value="/tasks", 
-//	method=RequestMethod.GET,
-//    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//	public @ResponseBody List<Task> getTasks(@RequestParam("creationDate") Date date) {
-//		logger.info("Ordered? " + date);
-//		try{
-//			List<Job> jobs = jobDAO.list(order);
-//			return jobs;
-//		}catch(Exception e){
-//			System.out.println("Erro na transação: " + e);
-//		}
-//		return null;
-//	}
+	@RequestMapping(value="/tasks", 
+			method=RequestMethod.GET,
+		    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public @ResponseBody List<Task> getTasks(@RequestParam("creationDate") String date) {
+		logger.info("Ordered? " + date);
+		try{
+			List<Task> tasks = taskDAO.list(date);
+			return tasks;
+		}catch(Exception e){
+			System.out.println("Erro na transação: " + e);
+		}
+		return null;
+	}
 	
 //	@RequestMapping(value="/tasks", 
 //			method=RequestMethod.POST,

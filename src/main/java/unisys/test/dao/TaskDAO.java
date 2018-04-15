@@ -22,9 +22,13 @@ public class TaskDAO extends BaseDAO<Task> {
 		super(Task.class);
 	}
 	
-	public List<Task> list(boolean order) {
+	public List<Task> list(String creationDate) {
 		List<Task> tasks = new ArrayList<Task>();
-
+		if(creationDate != null){
+			tasks = em.createQuery("from Task where createdAt like " + creationDate).getResultList();
+		} else {
+			tasks = em.createQuery("from Task").getResultList();
+		}
 		return tasks;
 	}
 
