@@ -32,8 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Job {
 
 	@Id
-	@Column(name="ID")
-	@GeneratedValue
+	@Column(name="ID", nullable=false)
 	private Long Id;
 	
 	@Column(name="Name", nullable=false)

@@ -91,7 +91,7 @@ public class TaskController {
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity updateJob(@PathVariable("id") Long id, @RequestBody Task task) {
+    public ResponseEntity updateTask(@PathVariable("id") Long id, @RequestBody Task task) {
 		logger.info("Updating Task with ID: " + id);
 		try{
 			Task taskUpdate = taskDAO.get(id);

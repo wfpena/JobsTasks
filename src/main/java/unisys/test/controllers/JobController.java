@@ -55,7 +55,7 @@ public class JobController {
     }
 	@RequestMapping(value="", method=RequestMethod.GET,
             produces="application/json")
-    public ResponseEntity jobs(@RequestParam(value="order", required=false) boolean order) {
+    public ResponseEntity getJobs(@RequestParam(value="order", required=false) boolean order) {
 		logger.info("Retrieving All Jobs");
 		logger.info(order ? "Sorted by sum of Taks weight": "Not sorted by sum of Tasks weight");
 		try{
@@ -70,7 +70,7 @@ public class JobController {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity jobs(@PathVariable("id") Long id) {
+    public ResponseEntity getJob(@PathVariable("id") Long id) {
 		logger.info("Retrieving Job with ID: " + id);
 		try{
 			Job job = jobDAO.get(id);
@@ -93,7 +93,7 @@ public class JobController {
 		try{
 			jobDAO.delete(id);
 			logger.info("End of Transaction");
-			return ResponseEntity.status(HttpStatus.OK).body(new String("\"Job succesfully removed\""));
+			return ResponseEntity.status(HttpStatus.OK).body("");
 		}catch(Exception e){
 			logger.error("Transaction Error: " + e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Error removing Job: "+ e.getMessage() + "\"");
