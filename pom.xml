@@ -121,7 +121,20 @@
       <artifactId>hibernate-c3p0</artifactId>
       <version>4.3.7.Final</version>
 		</dependency>
-			
-
 	</dependencies>
+	
+<!-- 	<build> -->
+<!-- 			<plugins> -->
+<!-- 				<plugin> -->
+<!-- 			    <groupId>org.apache.maven.plugins</groupId> -->
+<!-- 			    <artifactId>maven-compiler-plugin</artifactId> -->
+<!-- 			    <version>2.3.2</version> -->
+<!-- 			    <configuration> -->
+<!-- 			        <source>1.6</source> -->
+<!-- 			        <target>1.6</target> -->
+<!-- 			        <encoding>UTF-8</encoding> -->
+<!-- 			    </configuration> -->
+<!-- 				</plugin> -->
+<!-- 			</plugins> -->
+<!-- 		</build> -->
 </project>
