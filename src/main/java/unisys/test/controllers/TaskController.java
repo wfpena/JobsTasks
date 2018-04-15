@@ -1,12 +1,12 @@
 package unisys.test.controllers;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import unisys.test.dao.TaskDAO;
-import unisys.test.models.Job;
 import unisys.test.models.Task;
 
 
@@ -40,23 +39,20 @@ public class TaskController {
 		return null;
 	}
 	
-//	@RequestMapping(value="/tasks", 
-//			method=RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-//            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    public String jobs(@RequestBody Job job) {
-//		logger.info("job:" + job.getId());
-//		try{
-//			for(Task task : job.getTasks()){
-//				task.setJob(job);
-//			}
-//			jobDAO.save(job);
-//			return "Saved Success";
-//		}catch(Exception e){
-//			logger.info("Transaction Error: " + e);
-//			return "Failed saving new job";
-//		}
-//    }
+	@RequestMapping(value="/tasks", 
+			method=RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String jobs(@RequestBody Task task) {
+		logger.info("Task:" + task.getId());
+		try{
+			taskDAO.save(task);
+			return "Saved Task Successfully";
+		}catch(Exception e){
+			logger.info("Transaction Error: " + e);
+			return "Failed saving new Task";
+		}
+    }
 //	
 //	@RequestMapping(value="/tasks", 
 //			method=RequestMethod.GET,
