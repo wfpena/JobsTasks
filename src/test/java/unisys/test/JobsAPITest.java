@@ -153,6 +153,17 @@ public class JobsAPITest {
     			   .andDo(print())
     		       .andExpect(status().isOk());
     }
+    
+    @Test
+    public void shouldntInserAsParentOfItself() throws Exception {
+    	this.mockMvc.perform(post("/jobs")
+			   .contentType(MediaType.APPLICATION_JSON)
+ 		       .content(exampleInput)
+ 		       .accept(MediaType.APPLICATION_JSON))
+ 			   .andDo(print())
+ 		       .andExpect(status().isCreated());
+    	    	
+    }
 
 
 }

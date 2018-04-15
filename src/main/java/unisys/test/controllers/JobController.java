@@ -2,6 +2,7 @@ package unisys.test.controllers;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import unisys.test.dao.JobDAO;
+import unisys.test.dao.TaskDAO;
 import unisys.test.models.Job;
 import unisys.test.models.Task;
 
@@ -34,25 +36,76 @@ public class JobController {
 	@Autowired
 	private JobDAO jobDAO;
 	
+	@Autowired
+	private TaskDAO taskDAO;
+	
 	DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
 	
 	@RequestMapping(value="", method=RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity jobs(@RequestBody Job job) {
+    public ResponseEntity newJob(@RequestBody Job job) {
 		logger.info("Saving new Job");
 		try{
-			for(Task task : job.getTasks()){
-				task.setJob(job);
+			if(isParent(job, job.getId())){
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("\"Invalid Job: It is already in this chain\"");
+			} else {
+				List<Task> tasks = new ArrayList<Task>();
+				for(Task task : job.getTasks()){
+					Task t = taskDAO.get(task.getId());
+					if(t != null){
+						t.setJob(job);
+						taskDAO.update(t);
+						tasks.add(t);
+					} else {
+						task.setJob(job);
+						taskDAO.save(task);
+						tasks.add(task);
+					}
+				}
+				job.setTasks(tasks);
+				
+				if(job.getParentJob() != null){
+					if(jobDAO.get(job.getParentJob().getId()) == null){
+						jobDAO.save(job.getParentJob());
+					} 
+					job.setParentJob(jobDAO.get(job.getParentJob().getId()));
+					
+				}
+				jobDAO.save(job);
+				logger.info("Job Saved Successfully");
+				return ResponseEntity.status(HttpStatus.CREATED).body(job);
 			}
-			jobDAO.save(job);
-			logger.info("Job Saved Successfully");
-			return ResponseEntity.status(HttpStatus.CREATED).body(job);
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Transaction Error: " + e.getMessage() + "\"");
 		}
     }
+	
+	
+	/**
+	 * Helper function to check if the Job is a parent of itself
+	 * in the hierarchy chain
+	 * @param job
+	 * @param id
+	 * @return boolean
+	 */
+	public boolean isParent(Job job, int id){
+		try{
+			if(job.getParentJob() == null){
+				return false;
+			} else if(job.getParentJob().getId() == id) {
+				return true;
+			} else if(jobDAO.get(job.getParentJob().getId()) == null){
+				return false;
+			}else {
+				return isParent(jobDAO.get(job.getParentJob().getId()), id);
+			}
+		} catch(NullPointerException e){
+			return false;
+		}
+		
+	}
+	
 	@RequestMapping(value="", method=RequestMethod.GET,
             produces="application/json")
     public ResponseEntity getJobs(@RequestParam(value="order", required=false) boolean order) {
@@ -70,7 +123,7 @@ public class JobController {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity getJob(@PathVariable("id") Long id) {
+    public ResponseEntity getJob(@PathVariable("id") int id) {
 		logger.info("Retrieving Job with ID: " + id);
 		try{
 			Job job = jobDAO.get(id);
@@ -88,7 +141,7 @@ public class JobController {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity deleteJob(@PathVariable("id") Long id) {
+    public ResponseEntity deleteJob(@PathVariable("id") int id) {
 		logger.info("Deleting Job with id: " + id);
 		try{
 			jobDAO.delete(id);
@@ -103,7 +156,7 @@ public class JobController {
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity updateJob(@PathVariable("id") Long id, @RequestBody Job job) {
+    public ResponseEntity updateJob(@PathVariable("id") int id, @RequestBody Job job) {
 		logger.info("Updating job with id " + id);
 		try{
 			Job jobUpdate = jobDAO.get(id);

@@ -23,11 +23,11 @@ public abstract class BaseDAO <T> {
 	
 	@Transactional
 	public void save(final T entity) {
-		em.persist(entity);
+		em.merge(entity);
 	}
 	
 	@Transactional
-	public T get(final Long id) {
+	public T get(final int id) {
 		final T entity = em.find(clazz, id);
 		return entity;
 	}
@@ -38,7 +38,7 @@ public abstract class BaseDAO <T> {
 	}
 	
 	@Transactional
-	public void delete(final Long id) {
+	public void delete(final int id) {
 		T entity = get(id);
 		em.remove(entity);
 	}

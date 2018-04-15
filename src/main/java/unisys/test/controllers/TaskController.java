@@ -62,7 +62,7 @@ public class TaskController {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity getTask(@PathVariable("id") Long id) {
+    public ResponseEntity getTask(@PathVariable("id") int id) {
 		logger.info("Getting Taks with ID: " + id);
 		System.out.println("AFW");
 		try{
@@ -77,7 +77,7 @@ public class TaskController {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity deleteTask(@PathVariable("id") Long id) {
+    public ResponseEntity deleteTask(@PathVariable("id") int id) {
 		logger.info("Deleting Job with ID: " + id);
 		try{
 			taskDAO.delete(id);
@@ -91,7 +91,7 @@ public class TaskController {
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity updateTask(@PathVariable("id") Long id, @RequestBody Task task) {
+    public ResponseEntity updateTask(@PathVariable("id") int id, @RequestBody Task task) {
 		logger.info("Updating Task with ID: " + id);
 		try{
 			Task taskUpdate = taskDAO.get(id);

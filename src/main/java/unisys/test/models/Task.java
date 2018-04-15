@@ -21,7 +21,7 @@ public class Task {
 
 	@Id
 	@Column(name="ID", nullable=false)
-	private Long Id;
+	private int Id;
 	
 	@Column(name="Name", nullable=false)
 	private String name;
@@ -40,11 +40,11 @@ public class Task {
 	@JsonIgnore
 	private Job job;
 
-	public Long getId() {
+	public int getId() {
 		return Id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		Id = id;
 	}
 

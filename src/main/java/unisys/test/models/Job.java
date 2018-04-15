@@ -33,7 +33,7 @@ public class Job {
 
 	@Id
 	@Column(name="ID", nullable=false)
-	private Long Id;
+	private int Id;
 	
 	@Column(name="Name", nullable=false)
 	private String name;
@@ -41,24 +41,24 @@ public class Job {
 	@Column(name="Active", nullable=false)
 	public Boolean active;
 	
-	@ManyToOne(cascade={CascadeType.ALL})
+	@ManyToOne()
 	@JoinColumn(name="Parent_Id")
 	private Job parentJob;
 	
-	@OneToMany(mappedBy="parentJob", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="parentJob", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonIgnore
 	private List<Job> childJobs;
 	
-	@OneToMany(mappedBy="job", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="job", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonIgnoreProperties("job")
 	private List<Task> tasks;
 
 	
-	public Long getId() {
+	public int getId() {
 		return Id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		Id = id;
 	}
 	
