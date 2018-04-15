@@ -1,0 +1,25 @@
+<!-- <?xml version = "1.0" encoding = "utf-8"?> -->
+<!-- <!DOCTYPE hibernate-configuration SYSTEM  -->
+<!-- "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd"> -->
+<!-- <hibernate-configuration> -->
+<!--    <session-factory> -->
+   
+<!--    	  <property name="show_sql">false</property> -->
+<!--       <property name="format_sql">true</property> -->
+<!--       <property name="dialect">com.enigmabridge.hibernate.dialect.SQLiteDialect</property> -->
+<!--       <property name="connection.driver_class">org.sqlite.JDBC</property> -->
+<!--       <property name="connection.url">jdbc:sqlite:test.db</property> -->
+      
+      
+<!-- <!-- 	  <property name="connection.url">jdbc:sqlite:${catalina.base}/webapps/springm2/WEB-INF/classes/database/test.db</property> --> -->
+      
+<!--       <property name="connection.username"></property> -->
+<!--       <property name="connection.password"></property> -->
+             
+<!--        Drop and re-create all database on startup -->
+<!--        <property name="hibernate.hbm2ddl.auto">create-drop</property> -->
+       
+<!-- 			 <mapping class="unisys.test.models.Job"/> -->
+<!-- 			 <mapping class="unisys.test.models.Task"/> -->
+<!--    </session-factory> -->
+<!-- </hibernate-configuration> -->
