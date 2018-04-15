@@ -1,13 +1,14 @@
 package unisys.test.controllers;
 
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,34 +50,32 @@ public class JobController {
 			return "Failed saving new job";
 		}
     }
-	
 	@RequestMapping(value="/jobs", 
 			method=RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody List<Job> jobs(@RequestParam(value="order", required=false) boolean order) {
+            produces="application/json")
+    public ResponseEntity jobs(@RequestParam(value="order", required=false) boolean order) {
 		logger.info("Retrieving All Jobs");
 		logger.info(order ? "Sorted by sum of Taks weight": "Not sorted by sum of Tasks weight");
 		try{
 			List<Job> jobs = jobDAO.list(order);
-			return jobs;
-			//return new ResponseEntity<List<Job>>(jobs, HttpStatus.OK);
+			logger.info("Retrieved " + jobs.size() + " Jobs");
+			return ResponseEntity.status(HttpStatus.CREATED).body(jobs);
 		}catch(Exception e){
-			System.out.println("Erro na transação: " + e);
-			//return new ResponseEntity<String>("Erro: :" + e, HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.error("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Transaction Error");
 		}
-		return null;
     }
 	
 	@RequestMapping(value="/jobs/{id}", 
 			method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody Job jobs(@PathVariable("id") Long id) {
+    public ResponseEntity jobs(@PathVariable("id") Long id) {
 		logger.info("Retrieving Job with id: " + id);
 		try{
 			Job job = jobDAO.get(id);
 			return job;
 		}catch(Exception e){
-			System.out.println("Erro na transação: " + e);
+			logger.error("Transaction Error: " + e);
 		}
 		return null;
     }
@@ -90,7 +89,7 @@ public class JobController {
 			jobDAO.delete(id);
 			return "Job removed";
 		}catch(Exception e){
-			System.out.println("Erro na transação: " + e);
+			logger.error("Transaction Error: " + e);
 		}
 		return "Error removing Job";
     }

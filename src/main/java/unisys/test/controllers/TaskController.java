@@ -36,7 +36,7 @@ public class TaskController {
 			List<Task> tasks = taskDAO.list(date);
 			return tasks;
 		}catch(Exception e){
-			System.out.println("Erro na transação: " + e);
+			logger.error("Transaction Error: " + e);
 		}
 		return null;
 	}
@@ -67,7 +67,6 @@ public class TaskController {
 			return task;
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
-			//return new ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 			return null;
 		}
 		
@@ -83,7 +82,6 @@ public class TaskController {
 			return "Task removed successfully";
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
-			System.out.println("Erro na transação: " + e);
 		}
 		return "Error removing Task";
     }
