@@ -36,12 +36,13 @@ public class JobController {
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String jobs(@RequestBody Job job) {
-		logger.info("job:" + job.getId());
+		logger.info("Saving new Job");
 		try{
 			for(Task task : job.getTasks()){
 				task.setJob(job);
 			}
 			jobDAO.save(job);
+			logger.info("Job Saved Successfully");
 			return "Saved Success";
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
@@ -52,8 +53,9 @@ public class JobController {
 	@RequestMapping(value="/jobs", 
 			method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody List<Job> jobs(@RequestParam("order") boolean order) {
-		logger.info("Ordered? " + order);
+    public @ResponseBody List<Job> jobs(@RequestParam(value="order", required=false) boolean order) {
+		logger.info("Retrieving All Jobs");
+		logger.info(order ? "Sorted by sum of Taks weight": "Not sorted by sum of Tasks weight");
 		try{
 			List<Job> jobs = jobDAO.list(order);
 			return jobs;
@@ -112,11 +114,6 @@ public class JobController {
 			logger.info("Transaction Error: " + e);
 			return "Failed updating new job";
 		}
-    }
-	
-	@RequestMapping(value="/job/{id}")
-    public String getJob(@PathVariable("id")String id) {
-        return "ID " + id;
     }
 	
 }

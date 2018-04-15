@@ -9,8 +9,11 @@
 *.iws
  
 # DB
-# test.db
+test.db
 
 # Maven
 log/
 target/
+.mvn/
+mvnw.cmd
+mvnw
