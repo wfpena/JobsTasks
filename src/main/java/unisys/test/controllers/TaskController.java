@@ -73,7 +73,7 @@ public class TaskController {
 	@RequestMapping(value="/tasks/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity deleteTask(@PathVariable("id") Long id) {
-		logger.info("Deleting Job with id: " + id);
+		logger.info("Deleting Job with ID: " + id);
 		try{
 			taskDAO.delete(id);
 			return ResponseEntity.status(HttpStatus.OK).body("\"Task removed successfully\"");
@@ -87,7 +87,7 @@ public class TaskController {
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity updateJob(@PathVariable("id") Long id, @RequestBody Task task) {
-		logger.info("Updating Task with id " + id);
+		logger.info("Updating Task with ID: " + id);
 		try{
 			Task taskUpdate = taskDAO.get(id);
 			taskUpdate.setCompleted(task.isCompleted());
