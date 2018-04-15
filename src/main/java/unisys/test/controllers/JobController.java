@@ -32,8 +32,7 @@ public class JobController {
 	
 	DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
 	
-	@RequestMapping(value="/jobs", 
-			method=RequestMethod.POST,
+	@RequestMapping(value="/jobs", method=RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String jobs(@RequestBody Job job) {
@@ -50,8 +49,7 @@ public class JobController {
 			return "Failed saving new job";
 		}
     }
-	@RequestMapping(value="/jobs", 
-			method=RequestMethod.GET,
+	@RequestMapping(value="/jobs", method=RequestMethod.GET,
             produces="application/json")
     public ResponseEntity jobs(@RequestParam(value="order", required=false) boolean order) {
 		logger.info("Retrieving All Jobs");
@@ -66,22 +64,21 @@ public class JobController {
 		}
     }
 	
-	@RequestMapping(value="/jobs/{id}", 
-			method=RequestMethod.GET,
+	@RequestMapping(value="/jobs/{id}", method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity jobs(@PathVariable("id") Long id) {
-		logger.info("Retrieving Job with id: " + id);
+		logger.info("Retrieving Job with ID: " + id);
 		try{
 			Job job = jobDAO.get(id);
-			return job;
+			logger.info("End of Transaction");
+			return ResponseEntity.status(HttpStatus.OK).body(job);
 		}catch(Exception e){
 			logger.error("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Error retrieving Job");
 		}
-		return null;
     }
 	
-	@RequestMapping(value="/jobs/{id}", 
-			method=RequestMethod.DELETE,
+	@RequestMapping(value="/jobs/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteJob(@PathVariable("id") Long id) {
 		logger.info("Deleting Job with id: " + id);
@@ -94,8 +91,7 @@ public class JobController {
 		return "Error removing Job";
     }
 	
-	@RequestMapping(value="/jobs/{id}", 
-			method=RequestMethod.PUT,
+	@RequestMapping(value="/jobs/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateJob(@PathVariable("id") Long id, @RequestBody Job job) {

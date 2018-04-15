@@ -27,8 +27,7 @@ public class TaskController {
 	@Autowired
 	private TaskDAO taskDAO;
 	
-	@RequestMapping(value="/tasks", 
-			method=RequestMethod.GET,
+	@RequestMapping(value="/tasks", method=RequestMethod.GET,
 		    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody List<Task> getTasks(@RequestParam("creationDate") String date) {
 		logger.info("Ordered? " + date);
@@ -41,8 +40,7 @@ public class TaskController {
 		return null;
 	}
 	
-	@RequestMapping(value="/tasks", 
-			method=RequestMethod.POST,
+	@RequestMapping(value="/tasks", method=RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String newTask(@RequestBody Task task) {
@@ -56,8 +54,7 @@ public class TaskController {
 		}
     }
 	
-	@RequestMapping(value="/tasks/{id}", 
-			method=RequestMethod.GET,
+	@RequestMapping(value="/tasks/{id}", method=RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody Task getTask(@PathVariable("id") Long id) {
 		logger.info("Getting Taks with ID: " + id);
@@ -72,8 +69,7 @@ public class TaskController {
 		
     }
 	
-	@RequestMapping(value="/tasks/{id}", 
-			method=RequestMethod.DELETE,
+	@RequestMapping(value="/tasks/{id}", method=RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteTask(@PathVariable("id") Long id) {
 		logger.info("Deleting Job with id: " + id);
@@ -86,8 +82,7 @@ public class TaskController {
 		return "Error removing Task";
     }
 	
-	@RequestMapping(value="/tasks/{id}", 
-			method=RequestMethod.PUT,
+	@RequestMapping(value="/tasks/{id}", method=RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateJob(@PathVariable("id") Long id, @RequestBody Task task) {
