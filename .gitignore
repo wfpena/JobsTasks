@@ -16,6 +16,3 @@ db_for_testing.db
 # Maven
 log/
 target/
-.mvn/
-mvnw.cmd
-mvnw
