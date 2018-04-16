@@ -82,6 +82,71 @@ public class JobController {
     }
 	
 	
+	@RequestMapping(value="", method=RequestMethod.GET, produces="application/json")
+    public ResponseEntity getJobs(@RequestParam(value="order", required=false) boolean order) {
+		logger.info("Retrieving All Jobs");
+		logger.info(order ? "Sorted by sum of Taks weight": "Not sorted by sum of Tasks weight");
+		try{
+			List<Job> jobs = jobDAO.list(order);
+			logger.info("Retrieved " + jobs.size() + " Jobs");
+			return ResponseEntity.status(HttpStatus.OK).body(jobs);
+		}catch(Exception e){
+			logger.error("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Transaction Error\"");
+		}
+    }
+	
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity getJob(@PathVariable("id") int id) {
+		logger.info("Retrieving Job with ID: " + id);
+		try{
+			Job job = jobDAO.get(id);
+			logger.info("End of Transaction");
+			if(job != null){
+				return ResponseEntity.status(HttpStatus.OK).body(job);
+			} else {
+				return new ResponseEntity<String>("\"Job not Found\"", HttpStatus.NOT_FOUND);
+			}
+		}catch(Exception e){
+			logger.error("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Internal Error retrieving Job\"");
+		}
+    }
+	
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity deleteJob(@PathVariable("id") int id) {
+		logger.info("Deleting Job with id: " + id);
+		try{
+			jobDAO.delete(id);
+			logger.info("End of Transaction");
+			return ResponseEntity.status(HttpStatus.OK).body("");
+		}catch(Exception e){
+			logger.error("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Error removing Job: "+ e.getMessage() + "\"");
+		}
+    }
+	
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity updateJob(@PathVariable("id") int id, @RequestBody Job job) {
+		logger.info("Updating job with id " + id);
+		try{
+			Job jobUpdate = jobDAO.get(id);
+			jobUpdate.setActive(job.getActive());
+			jobUpdate.setChildJobs(job.getChildJobs());
+			jobUpdate.setName(job.getName());
+			jobUpdate.setParentJob(job.getParentJob());
+			jobUpdate.setTasks(job.getTasks());
+			jobDAO.update(jobUpdate);
+			return ResponseEntity.status(HttpStatus.OK).body(jobUpdate);
+		}catch(Exception e){
+			logger.info("Transaction Error: " + e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Error: "+ e.getMessage() + "\"");
+		}
+    }
+	
 	/**
 	 * Helper function to check if the Job is a parent of itself
 	 * in the hierarchy chain
@@ -105,72 +170,5 @@ public class JobController {
 		}
 		
 	}
-	
-	@RequestMapping(value="", method=RequestMethod.GET,
-            produces="application/json")
-    public ResponseEntity getJobs(@RequestParam(value="order", required=false) boolean order) {
-		logger.info("Retrieving All Jobs");
-		logger.info(order ? "Sorted by sum of Taks weight": "Not sorted by sum of Tasks weight");
-		try{
-			List<Job> jobs = jobDAO.list(order);
-			logger.info("Retrieved " + jobs.size() + " Jobs");
-			return ResponseEntity.status(HttpStatus.OK).body(jobs);
-		}catch(Exception e){
-			logger.error("Transaction Error: " + e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Transaction Error\"");
-		}
-    }
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity getJob(@PathVariable("id") int id) {
-		logger.info("Retrieving Job with ID: " + id);
-		try{
-			Job job = jobDAO.get(id);
-			logger.info("End of Transaction");
-			if(job != null){
-				return ResponseEntity.status(HttpStatus.OK).body(job);
-			} else {
-				return new ResponseEntity<String>("\"Job not Found\"", HttpStatus.NOT_FOUND);
-			}
-		}catch(Exception e){
-			logger.error("Transaction Error: " + e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Internal Error retrieving Job\"");
-		}
-    }
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity deleteJob(@PathVariable("id") int id) {
-		logger.info("Deleting Job with id: " + id);
-		try{
-			jobDAO.delete(id);
-			logger.info("End of Transaction");
-			return ResponseEntity.status(HttpStatus.OK).body("");
-		}catch(Exception e){
-			logger.error("Transaction Error: " + e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Error removing Job: "+ e.getMessage() + "\"");
-		}
-    }
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.PUT,
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity updateJob(@PathVariable("id") int id, @RequestBody Job job) {
-		logger.info("Updating job with id " + id);
-		try{
-			Job jobUpdate = jobDAO.get(id);
-			jobUpdate.setActive(job.getActive());
-			jobUpdate.setChildJobs(job.getChildJobs());
-			jobUpdate.setName(job.getName());
-			jobUpdate.setParentJob(job.getParentJob());
-			jobUpdate.setTasks(job.getTasks());
-			jobDAO.update(jobUpdate);
-			return ResponseEntity.status(HttpStatus.OK).body(jobUpdate);
-		}catch(Exception e){
-			logger.info("Transaction Error: " + e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("\"Error: "+ e.getMessage() + "\"");
-		}
-    }
 	
 }

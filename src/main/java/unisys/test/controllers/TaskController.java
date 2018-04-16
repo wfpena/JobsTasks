@@ -33,8 +33,7 @@ public class TaskController {
 	@Autowired
 	private TaskDAO taskDAO;
 	
-	@RequestMapping(value="", method=RequestMethod.GET,
-		    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value="", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity getTasks(@RequestParam(value="creationDate", required=false) String date) {
 		logger.info(date == null ? "Not filtered by date" : new String("Filtered by date " + date));
 		try{
@@ -46,9 +45,7 @@ public class TaskController {
 		}
 	}
 	
-	@RequestMapping(value="", method=RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value="", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity newTask(@RequestBody Task task) {
 		logger.info("Inserting new Task");
 		try{
@@ -60,8 +57,7 @@ public class TaskController {
 		}
     }
 	
-	@RequestMapping(value="/{id}", method=RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getTask(@PathVariable("id") int id) {
 		logger.info("Getting Taks with ID: " + id);
 		System.out.println("AFW");
@@ -75,8 +71,7 @@ public class TaskController {
 		
     }
 	
-	@RequestMapping(value="/{id}", method=RequestMethod.DELETE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity deleteTask(@PathVariable("id") int id) {
 		logger.info("Deleting Job with ID: " + id);
 		try{
@@ -84,13 +79,11 @@ public class TaskController {
 			return ResponseEntity.status(HttpStatus.OK).body("\"Task removed successfully\"");
 		}catch(Exception e){
 			logger.info("Transaction Error: " + e);
-			return ResponseEntity.status(HttpStatus.OK).body("\"Transaction Error\"");
+			return ResponseEntity.status(HttpStatus.OK).body("\"Error removing task\"");
 		}
     }
 	
-	@RequestMapping(value="/{id}", method=RequestMethod.PUT,
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity updateTask(@PathVariable("id") int id, @RequestBody Task task) {
 		logger.info("Updating Task with ID: " + id);
 		try{
