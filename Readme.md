@@ -45,20 +45,20 @@ These are the endpoints for manipulating the jobs:
             
         * **Example:** `/jobs?order=true`
     * **Action**: `POST`
-    *  **URL Params:**
-
-       *  **Required:** None
-
-       * **Optional:** None
-       
-       * **Data Params:** New job to be inserted. 
-        
-        * **Success Response:**
-            * Code: 201
-            * Content: Returns the inserted job.
-        * **Error Response:** 
-            * Code: 500
-            * Content: "Transaction Error"
+        *  **URL Params:**
+    
+           *  **Required:** None
+    
+           * **Optional:** None
+           
+           * **Data Params:** New job to be inserted. 
+            
+            * **Success Response:**
+                * Code: 201
+                * Content: Returns the inserted job.
+            * **Error Response:** 
+                * Code: 500
+                * Content: "Transaction Error"
             
 * **/jobs/{id}**
     * **Action**: `GET`
