@@ -1,4 +1,4 @@
-# UNISYS-TEST API documentation
+# SQUADRA-TEST API documentation
 ---
 This application provides an API to save Jobs and Tasks. Providing basic features like adding, updating, deleting, restrieving and sorting.
 ## Getting Started
